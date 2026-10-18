@@ -1,0 +1,14 @@
+{
+  "name": "ui-developer",
+  "version": "0.1.0",
+  "description": "UI developer: builds menus, HUDs and screens that bind to game state, with clean navigation, localisation and accessibility.",
+  "author": {
+    "name": "opsroller"
+  },
+  "repository": "https://github.com/opsroller/ui-developer",
+  "license": "MIT",
+  "keywords": [
+    "role",
+    "job-function"
+  ]
+}
