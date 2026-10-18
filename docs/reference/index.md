@@ -37,7 +37,7 @@ Checking it:
 | Field | Value |
 |---|---|
 | `name` | `ui-developer` |
-| `version` | `0.3.0` |
+| `version` | `0.4.0` |
 | `author.name` | `opsroller` |
 | `repository` | `https://github.com/opsroller/ui-developer` |
 | `license` | `GPL-2.0-or-later` |

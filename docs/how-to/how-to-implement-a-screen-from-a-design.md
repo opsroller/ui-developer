@@ -23,8 +23,12 @@ workflow.
 5. If it returns `done-with-unverified-checks`, run the named checks by
    hand with the matching skill checklist, or run
    [screen-audit](how-to-audit-screens-before-a-release.md) on this screen.
-6. Attach the screenshots and the assumed-defaults list to the PR and
-   hand off through the engineering-practices work-package flow.
+6. Ship it. For a work package, pass the whole result as `prior` to
+   engineering-practices deliver-package so it ships without being built
+   again: `/engineering-practices:deliver-package { wp: "<the package>", prior: <this result> }`.
+   With no work package, land the pushed branch with
+   `/engineering-practices:land-pr { branch: "<handoff.branch>" }`. Attach
+   the screenshots and the assumed-defaults list to the PR.
 
 For a HUD element, give the HUD element's name as `screen`; the HUD rules in
 `ui-architecture` apply automatically.
