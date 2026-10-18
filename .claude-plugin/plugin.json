@@ -1,6 +1,6 @@
 {
   "name": "ui-developer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "UI developer (UI engineer) role: implements in-app UI (menus, HUD, dialogs, settings) from the visual design, with sound UI architecture and state, responsive layout across screens and safe areas, localization and internationalization, accessibility, and touch, mouse, keyboard and controller input.",
   "author": {
     "name": "opsroller"
