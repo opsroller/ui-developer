@@ -9,6 +9,7 @@ export const meta = {
     { title: 'Fix', detail: 'one agent applies all findings, shared widgets first' },
     { title: 'Docs', detail: 'write or update the planned Diataxis pages in the same PR' },
     { title: 'Docs check', detail: 'each touched page holds one kind; titles and links follow the pattern' },
+    { title: 'Handoff', detail: 'commit and push the screen, run the build and tests, return a handoff for engineering-practices deliver-package or land-pr' },
   ],
 }
 
@@ -198,6 +199,16 @@ const check = await agent(
 if (!check) return { status: 'unverified', reason: 'docs check agent failed', docs: docs.pages, unverifiedLenses: unverified }
 if (!check.pass) return { status: 'blocked', open: check.problems }
 
+// The handoff is what engineering-practices deliver-package takes as
+// prior, so the screen ships without being built again.
+phase('Handoff')
+const HANDOFF = { type: 'object', properties: { branch: { type: 'string' }, pr: { type: 'string' }, head_sha: { type: 'string' }, tests_pass: { type: 'boolean' }, problem: { type: 'string' } }, required: ['branch', 'tests_pass'] }
+const hand = await agent(
+  `Hand off the "${screen}" screen. If you are on the default branch, cut a Conventional branch (feat/<slug>) from the latest remote default branch; otherwise stay on the current feature branch. Commit every file this run wrote (the screen and shared widget files: ${files.join(', ') || 'see the build commits'}; the string tables; and the docs pages: ${(docs.pages || []).join(', ') || 'as written'}) as Conventional Commits, and push. Run the project's build, tests and the docs or link checks the project profile names on the pushed head. Do not open, mark ready or merge a PR: the engineering-practices workflow named in the result does that. Follow the engineering-practices git-workflow skill. Return the branch, any open PR, the head commit SHA, whether the checks pass on that head, and the problem if not.`,
+  { schema: HANDOFF, phase: 'Handoff', label: 'handoff' })
+if (!hand || !hand.branch) return { status: 'blocked', open: [hand && hand.problem ? hand.problem : 'handoff step returned nothing; the screen may be uncommitted or unpushed'] }
+if (!hand.tests_pass) return { status: 'blocked', open: [`build or tests fail on ${hand.branch}${hand.head_sha ? ' at ' + hand.head_sha : ''}: ${hand.problem || 'no details'}`] }
+
 return {
   status: unverified.length ? 'done-with-unverified-checks' : 'done',
   states: plan.states.length,
@@ -206,5 +217,17 @@ return {
   unverifiedLenses: unverified,
   docs: docs.pages,
   undocumented: docs.undocumented,
+  handoff: {
+    from: 'ui-developer:implement-screen',
+    branch: hand.branch,
+    pr: hand.pr || '',
+    head_sha: hand.head_sha || '',
+    tests_pass: true,
+    docs: docs.pages || [],
+    undocumented: docs.undocumented || [],
+    notes: (gaps.length ? [`${gaps.length} design gap(s) implemented with assumed defaults; list them in the PR for the designer`] : [])
+      .concat(unverified.length ? [`check lenses left unverified: ${unverified.join(', ')}`] : []),
+  },
+  next: 'ship it without rebuilding: /engineering-practices:deliver-package { wp: "<the package>", prior: <this result> }; with no work package, /engineering-practices:land-pr { branch: "<handoff.branch>" }',
 }
 })(RUN.agent, RUN.phase, RUN.log)]); return RUN.finish(RUN_OUT)

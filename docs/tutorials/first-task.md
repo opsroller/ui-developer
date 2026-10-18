@@ -47,7 +47,7 @@ Run the ui-developer implement-screen workflow with
 { screen: "pause dialog", design: "designs/pause-dialog.png" }
 ```
 
-The workflow shows six phases. After **Plan** the log reads something like:
+The workflow shows seven phases. After **Plan** the log reads something like:
 
 ```
 14 states, 2 design gaps, 1 shared widgets, 2 doc pages planned
@@ -73,7 +73,8 @@ The workflow ends with a summary like:
 
 ```
 { status: "done", states: 14, assumedForDesigner: [...], findingsFixed: 6,
-  docs: ["docs/reference/ui/pause-dialog.md", "docs/how-to/how-to-add-a-screen.md"] }
+  docs: ["docs/reference/ui/pause-dialog.md", "docs/how-to/how-to-add-a-screen.md"],
+  handoff: { branch: "feat/pause-dialog", tests_pass: true, ... }, next: "..." }
 ```
 
 Open the two docs pages. Notice that the reference page only describes
